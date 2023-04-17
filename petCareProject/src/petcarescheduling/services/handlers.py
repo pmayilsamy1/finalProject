@@ -27,7 +27,7 @@ def add_service(
             print("Inside if")
             print(cmd.service_name,cmd.price,cmd.pet_species)
 
-            service = models.PetService(int(cmd.service_id),str(cmd.service_name),int(cmd.price),str(cmd.pet_species))
+            service = models.PetService(str(cmd.service_name),int(cmd.price),str(cmd.pet_species))
             uow.petservices.add(service)
         else: 
             print("Already available")

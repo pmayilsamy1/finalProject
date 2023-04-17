@@ -12,7 +12,7 @@ from petcarescheduling.adapters import repository
 
 
 class AbstractUnitOfWork(abc.ABC):
-    bookmarks: repository.AbstractPetServicesRepository
+    petservices: repository.AbstractPetServicesRepository
 
     def __enter__(self) -> AbstractUnitOfWork:
         return self

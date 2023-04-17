@@ -7,7 +7,7 @@ class Command:
 
 @dataclass
 class CreateService(Command):
-    service_id: int
+    #service_id: int
     service_name: str
     price: int
     pet_species: str

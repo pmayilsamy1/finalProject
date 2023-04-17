@@ -8,12 +8,12 @@ class PetService:
     """
     def __init__(
         self,
-        service_id: int,
+        #service_id: int,
         service_name: str,
         price: int,
         pet_species: str
     ) -> None:
-        self.service_id = service_id,
-        self.service_name = service_name,
-        self.price = price,
+        #self.service_id = service_id,
+        self.service_name = service_name
+        self.price = price
         self.pet_species = pet_species
