@@ -6,8 +6,7 @@ from sqlalchemy import (
     MetaData,
     Column,
     Integer,
-    Text,
-    Numeric,
+   
     String,
     Date,
     ForeignKey,
@@ -34,9 +33,9 @@ petService = Table(
    "petservice",
     metadata,
     Column("service_id", Integer, primary_key=True, autoincrement=True),
-    Column("service_name", Text),
+    Column("service_name", String(255)),
     Column("price", Integer),
-    Column("pet_species", Text),
+    Column("pet_species", String(255)),
    
 )
 

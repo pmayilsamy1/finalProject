@@ -17,3 +17,4 @@ class PetService:
         self.service_name = service_name
         self.price = price
         self.pet_species = pet_species
+        self.events = []
