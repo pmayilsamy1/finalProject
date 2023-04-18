@@ -1,15 +1,18 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from .models import PetService
-
 
 class Event(ABC):
     pass
 
 @dataclass
-class PetServiceAdded(Event):
-    service_id: int
+class Allocated(Event):
+    customer_id: int
     service_name: str
-    price: str
     pet_species: str
+    service_id: int
+
+@dataclass
+class NotAvailable(Event):
+    service_name: str
+    

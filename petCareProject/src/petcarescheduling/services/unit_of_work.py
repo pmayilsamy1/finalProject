@@ -12,7 +12,7 @@ from petcarescheduling.adapters import repository
 
 
 class AbstractUnitOfWork(abc.ABC):
-    petservices: repository.AbstractPetServicesRepository
+    services: repository.AbstractPetServicesRepository
 
     def __enter__(self) -> AbstractUnitOfWork:
         return self
@@ -24,9 +24,9 @@ class AbstractUnitOfWork(abc.ABC):
         self._commit()
 
     def collect_new_events(self):
-        for petservice in self.petservices.seen:
-            while petservice.events:
-                yield petservice.events.pop(0)
+        for service in self.services.seen:
+            while service.events:
+                yield service.events.pop(0)
 
     @abc.abstractmethod
     def _commit(self):
@@ -57,7 +57,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 
     def __enter__(self):
         self.session = self.session_factory()  # type: Session
-        self.petservices = repository.SqlAlchemyPetServicesRepository(self.session)
+        self.services = repository.SqlAlchemyPetServicesRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):

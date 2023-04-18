@@ -14,6 +14,12 @@ class CreateService(Command):
 
 
 @dataclass
+class AllocateService(Command):
+    customer_id: int
+    service_name: str
+    pet_species: str
+
+@dataclass
 class UpdateService(Command):
     service_name: str
     price: int

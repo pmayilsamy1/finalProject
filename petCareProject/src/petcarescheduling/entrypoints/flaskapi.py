@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from petcarescheduling import bootstrap
 from petcarescheduling.domain import commands
+from petcarescheduling.services.handlers import InvalidService
 
 app = Flask(__name__)
 bus = bootstrap.bootstrap()
@@ -22,3 +23,15 @@ def add_service():
     )
     bus.handle(cmd)
     return "OK", 201
+
+@app.route("/allocate_service", methods=["POST"])
+def allocate_service():
+    try:
+        cmd = commands.AllocateService(
+            request.json["customer_id"], request.json["service_name"], request.json["pet_species"]
+        )
+        bus.handle(cmd)
+    except InvalidService as e:
+        return {"message": str(e)}, 400
+
+    return "OK", 202
