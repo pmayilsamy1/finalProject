@@ -1,6 +1,11 @@
 curl -d '{"service_name":"Basic Training","price":100,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service  
-curl -d '{"service_name":"Advanced Training","price":200,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service  
+curl -d '{"service_name":"Advanced Training","price":200,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service 
+curl -d '{"service_name":"Grooming","price":50,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service
+curl -d '{"service_name":"Bath","price":50,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service
 
 curl -d '{"customer_id":2345,"service_name":"Basic Training","pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/allocate_service
 curl -d '{"customer_id":2346,"service_name":"Advanced Training","pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/allocate_service
+curl -d '{"customer_id":2346,"service_name":"Grooming","pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/allocate_service
+curl -d '{"customer_id":1234,"service_name":"Bath","pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/allocate_service
+
 

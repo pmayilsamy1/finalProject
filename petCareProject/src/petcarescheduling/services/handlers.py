@@ -4,7 +4,7 @@
 #list all services
 
 from __future__ import annotations
-
+from dataclasses import asdict
 from typing import List, Dict, Callable, Type, TYPE_CHECKING
 from petcarescheduling.domain import commands, events, models
 import logging
@@ -31,9 +31,7 @@ def add_service(
 
             service = models.Service(cmd.service_name, petservices=[])
             uow.services.add(service)
-        else: 
-            print("Already available")
-        service.petservice.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species))
+        service.petservices.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species))
         uow.commit()
 
 def allocate(

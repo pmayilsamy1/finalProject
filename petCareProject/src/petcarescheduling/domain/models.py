@@ -3,12 +3,6 @@ from dataclasses import dataclass
 from typing import Optional, List, Set
 from . import commands, events
 
-@dataclass(unsafe_hash=True)
-class Customer:
-    customer_id: int
-    service_name: str
-    pet_species: str
-
 class Service:
     def __init__(self, service_name: str, petservices: List[PetService], version_number: int = 0):
         self.service_name = service_name
@@ -18,22 +12,28 @@ class Service:
 
     def allocate(self, customer: Customer) -> str:
         try:
-            petservice = next(b for b in sorted(self.petservices) if b.can_allocate(customer))
-            petservice.allocate(customer)
+            petservice1 = next(b for b in sorted(self.petservices) if b.can_allocate(customer))
+            petservice1.allocate(customer)
             self.version_number += 1
             self.events.append(
                 events.Allocated(
                     customer_id=customer.customer_id,
                     service_name=customer.service_name,
                     pet_species=customer.pet_species,
-                    service_id=petservice.service_id
+                    service_id=petservice1.service_id
                 )
             )
-            return petservice.service_id
+            return petservice1
         except StopIteration:
             self.events.append(events.NotAvailable(customer.service_name))
             return None
-   
+
+
+@dataclass(unsafe_hash=True)
+class Customer:
+    customer_id: int
+    service_name: str
+    pet_species: str  
 
 class PetService:
     """
@@ -43,18 +43,11 @@ class PetService:
 	"petSpecies"	TEXT NOT NULL,
 	PRIMARY KEY("service_id" AUTOINCREMENT)
     """
-    def __init__(
-        self,
-        #service_id: int,
-        service_name: str,
-        price: int,
-        pet_species: str
-    ) -> None:
+    def __init__(self,service_name: str,price: int,pet_species: str):
         #self.service_id = service_id,
         self.service_name = service_name
         self.price = price
         self.pet_species = pet_species
-        self.events = []
         self._allocations = set()
 
     def allocate(self, customer: Customer):
@@ -62,5 +55,5 @@ class PetService:
             self._allocations.add(customer)
 
     def can_allocate(self, customer: Customer) -> bool:
-        return self.service_name == customer.service_name and self.pet_species >= customer.pet_species
+        return self.service_name == customer.service_name and self.pet_species == customer.pet_species
 
