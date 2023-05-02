@@ -12,18 +12,18 @@ class Service:
 
     def allocate(self, customer: Customer) -> str:
         try:
-            petservice1 = next(b for b in sorted(self.petservices) if b.can_allocate(customer))
-            petservice1.allocate(customer)
+            petservice = next(b for b in sorted(self.petservices) if b.can_allocate(customer))
+            petservice.allocate(customer)
             self.version_number += 1
             self.events.append(
                 events.Allocated(
                     customer_id=customer.customer_id,
                     service_name=customer.service_name,
                     pet_species=customer.pet_species,
-                    service_id=petservice1.service_id
+                    service_id=petservice.service_id,
                 )
             )
-            return petservice1
+            return petservice
         except StopIteration:
             self.events.append(events.NotAvailable(customer.service_name))
             return None
@@ -49,6 +49,17 @@ class PetService:
         self.price = price
         self.pet_species = pet_species
         self._allocations = set()
+
+    def __repr__(self):
+        return f"<PetService {self.service_name}>"
+
+    def __eq__(self, other):
+        if not isinstance(other, PetService):
+            return False
+        return other.reference == self.service_name
+
+    def __hash__(self):
+        return hash(self.service_name)
 
     def allocate(self, customer: Customer):
         if self.can_allocate(customer):

@@ -31,7 +31,9 @@ def add_service(
 
             service = models.Service(cmd.service_name, petservices=[])
             uow.services.add(service)
-        service.petservices.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species))
+            service.petservices.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species))
+        else:
+            print("Already Available")
         uow.commit()
 
 def allocate(
