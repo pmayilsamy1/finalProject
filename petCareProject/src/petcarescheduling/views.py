@@ -1,12 +1,10 @@
 from petcarescheduling.services import unit_of_work
+from sqlalchemy.sql import text
 
 
-def allocations(customer_id: str, uow: unit_of_work.SqlAlchemyUnitOfWork):
+def allocations(customerid: int, uow: unit_of_work.SqlAlchemyUnitOfWork):
     with uow:
-        results = uow.session.execute(
-            """
-            SELECT sku, batchref FROM allocations_view WHERE orderid = :orderid
-            """,
-            dict(customer_id=customer_id),
-        )
-    return [dict(r) for r in results]
+        query = text("SELECT id,customer_id,service_name, pet_species FROM customer_table WHERE customer_id = :customer_id")
+        results = uow.session.execute(query,dict(customer_id=customerid))
+    
+        return  [dict(r._mapping) for r in results]

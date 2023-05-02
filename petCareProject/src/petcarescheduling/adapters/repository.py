@@ -50,7 +50,7 @@ class SqlAlchemyPetServicesRepository(AbstractPetServicesRepository):
             self.session.query(models.Service)
             .join(models.PetService)
             .filter(
-                orm.petService.c.reference == service_name,
+                orm.petServices.service_name == service_name,
             )
             .first()
         )

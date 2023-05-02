@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from petcarescheduling import bootstrap
+from petcarescheduling import bootstrap, views
 from petcarescheduling.domain import commands
 from petcarescheduling.services.handlers import InvalidService
 
@@ -35,3 +35,12 @@ def allocate_service():
         return {"message": str(e)}, 400
 
     return "OK", 202
+
+@app.route("/allocations/<customer_id>", methods=["GET"])
+def allocations_view_endpoint(customer_id):
+    print(customer_id)
+    result = views.allocations(int(customer_id), bus.uow)
+    if not result:
+        return "not found", 404
+    return jsonify(result), 200
+
