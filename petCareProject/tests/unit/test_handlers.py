@@ -25,6 +25,14 @@ class FakeRepository(repository.AbstractPetServicesRepository):
             (p for p in self._services for b in p.service if b.reference == batchref),
             None,
         )
+    def _getPetService(self, service_name):
+        return next((p for p in self._services if p.service_name == service_name), None)
+
+    
+    def _update(self, service_name,quantity):
+        return next((p for p in self._services if p.service_name == service_name), None)
+
+
     
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
     def __init__(self):
@@ -55,15 +63,35 @@ def bootstrap_test_app():
 class TestAddPetService:
     def test_for_new_petservice(self):
         bus = bootstrap_test_app()
-        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle"))
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
         assert bus.uow.services.get("HairCut") is not None
         assert bus.uow.committed
 
     def test_for_existing_petservice(self):
         bus = bootstrap_test_app()
-        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle"))
-        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle"))
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
         assert "HairCut" in [
             b.service_name for b in bus.uow.services.get("HairCut").petservices
         ]
 
+class TestAllocate:
+    def test_allocates(self):
+        bus = bootstrap_test_app()
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
+        bus.handle(commands.AllocateService(2345,"HairCut","GoldenDoodle"))
+        [petservice] = bus.uow.services.get("HairCut").petservices
+        assert petservice.available_quantity == 4
+
+    def test_errors_for_invalid_service(self):
+        bus = bootstrap_test_app()
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
+
+        with pytest.raises(handlers.InvalidService, match="Invalid service"):
+            bus.handle(commands.AllocateService(2345, "NONEXISTENTSERVICE", "GoldenDoodle"))
+
+    def test_commits(self):
+        bus = bootstrap_test_app()
+        bus.handle(commands.CreateService("HairCut",50,"GoldenDoodle",5))
+        bus.handle(commands.AllocateService(2345,"HairCut","GoldenDoodle"))
+        assert bus.uow.committed

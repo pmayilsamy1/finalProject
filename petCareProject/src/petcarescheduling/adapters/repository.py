@@ -24,6 +24,13 @@ class AbstractPetServicesRepository(abc.ABC):
         if service:
             self.seen.add(service)
         return service
+    
+    def updateServiceQty(self, service_name,qty) -> models.Service:
+        service1 = self._getPetService(service_name)
+        if(service1.qty >= qty):
+            service = self._update(service_name,service1.qty - qty)
+        
+        
 
     @abc.abstractmethod
     def _add(self, service: models.Service):
@@ -31,6 +38,14 @@ class AbstractPetServicesRepository(abc.ABC):
 
     @abc.abstractmethod
     def _get(self, service_name) -> models.Service:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def _getPetService(self, service_name) -> models.PetService:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def _update(self, service_name,qty) -> models.Service:
         raise NotImplementedError
 
 class SqlAlchemyPetServicesRepository(AbstractPetServicesRepository):
@@ -41,9 +56,16 @@ class SqlAlchemyPetServicesRepository(AbstractPetServicesRepository):
 
     def _add(self, service):
         self.session.add(service)
+        
 
     def _get(self, service_name):
         return self.session.query(models.Service).filter_by(service_name=service_name).first()
+    
+    def _getPetService(self, service_name):
+        return self.session.query(models.PetService).filter_by(service_name=service_name).first()
+    
+    def _update(self, service_name,quantity):
+        return self.session.query(models.PetService).filter_by(service_name=service_name).update({models.PetService.qty:quantity},synchronize_session = False)
 
     def _get_by_batchref(self, service_name):
         return (

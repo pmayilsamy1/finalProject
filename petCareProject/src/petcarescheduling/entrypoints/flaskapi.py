@@ -16,10 +16,11 @@ def add_service():
     service_name = data["service_name"]
     price = data["price"]
     pet_species = data["pet_species"]
+    qty = data["qty"]
     print(service_name,price,pet_species)
     
     cmd = commands.CreateService(
-        service_name=service_name, price=price, pet_species=pet_species
+        service_name=service_name, price=price, pet_species=pet_species, qty=qty
     )
     bus.handle(cmd)
     return "OK", 201

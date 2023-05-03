@@ -1,4 +1,4 @@
-curl -d '{"service_name":"Basic Training","price":100,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service  
+curl -d '{"service_name":"Basic Training","price":100,"pet_species":"GoldenDoodle","qty": 5}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service  
 curl -d '{"service_name":"Advanced Training","price":200,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service 
 curl -d '{"service_name":"Grooming","price":50,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service
 curl -d '{"service_name":"Bath","price":50,"pet_species":"GoldenDoodle"}' -H 'Content-Type: application/json' http://127.0.0.1:5005/add_service

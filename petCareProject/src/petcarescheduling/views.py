@@ -8,3 +8,4 @@ def allocations(customerid: int, uow: unit_of_work.SqlAlchemyUnitOfWork):
         results = uow.session.execute(query,dict(customer_id=customerid))
     
         return  [dict(r._mapping) for r in results]
+    

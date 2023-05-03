@@ -11,6 +11,7 @@ class CreateService(Command):
     service_name: str
     price: int
     pet_species: str
+    qty: int
 
 
 @dataclass
@@ -20,6 +21,6 @@ class AllocateService(Command):
     pet_species: str
 
 @dataclass
-class UpdateService(Command):
+class ChangeBatchQuantity(Command):
     service_name: str
-    price: int
+    qty: int

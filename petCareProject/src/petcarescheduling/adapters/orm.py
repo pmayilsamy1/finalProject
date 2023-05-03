@@ -32,6 +32,7 @@ petServices = Table(
     Column("service_name", ForeignKey("service.service_name")),
     Column("price", Integer),
     Column("pet_species", String(255)),
+    Column("qty", Integer)
    
 )
 
@@ -49,6 +50,7 @@ customer_table = Table(
     Column("service_name", String(255),nullable=False),
     Column("pet_species", String(255), nullable=False),
     Column("customer_id", Integer),
+    Column("qty",Integer)
 )
 
 '''CREATE TABLE "allocate_service" (
@@ -88,9 +90,6 @@ service = Table(
 def start_mappers():
     
     print("starting mappers")
-    #mapper_registry.map_imperatively(models.Customer, customer_table)
-    #mapper_registry.map_imperatively(models.Customer, allocations)
-    #mapper_registry.map_imperatively(models.PetService, petService)
     logger.info("Starting mappers")
     customer_mapper = mapper_registry.map_imperatively(models.Customer, customer_table)
     petservice_mapper = mapper_registry.map_imperatively(

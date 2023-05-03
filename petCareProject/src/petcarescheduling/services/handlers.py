@@ -27,11 +27,11 @@ def add_service(
         service = uow.services.get(service_name=cmd.service_name)
         if service is None:
             print("Inside if")
-            print(cmd.service_name,cmd.price,cmd.pet_species)
+            print(cmd.service_name,cmd.price,cmd.pet_species,cmd.qty)
 
             service = models.Service(cmd.service_name, petservices=[])
             uow.services.add(service)
-            service.petservices.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species))
+            service.petservices.append(models.PetService(cmd.service_name, cmd.price,cmd.pet_species,cmd.qty))
         else:
             print("Already Available")
         uow.commit()
@@ -41,17 +41,34 @@ def allocate(
     uow: unit_of_work.AbstractUnitOfWork,
 ):
     print(cmd.customer_id, cmd.service_name, cmd.pet_species)
-    customer = models.Customer(cmd.customer_id, cmd.service_name, cmd.pet_species)
+    customer = models.Customer(cmd.customer_id, cmd.service_name, cmd.pet_species,1)
     print(customer)
     with uow:
-        print("Inside with")
         service = uow.services.get(service_name=customer.service_name)
-        print(service)
         if service is None:
             raise InvalidService(f"Invalid service {customer.service_name}")
-        print("Not in exception")
+        print(service.service_name)
         service.allocate(customer)
+        #uow.services.updateServiceQty(customer.service_name,1)
+        print("Out of update")
         uow.commit()
+
+def reallocate(
+    event: events.Deallocated,
+    uow: unit_of_work.AbstractUnitOfWork,
+):
+    allocate(commands.Allocate(**asdict(event)), uow=uow)
+
+
+def change_batch_quantity(
+    cmd: commands.ChangeBatchQuantity,
+    uow: unit_of_work.AbstractUnitOfWork,
+):
+    with uow:
+        service = uow.services.get_by_batchref(service_name=cmd.service_name)
+        service.change_batch_quantity(service_name=cmd.service_name, qty=cmd.qty)
+        uow.commit()
+
 
 def publish_allocated_event(
     event: events.Allocated,
@@ -72,6 +89,7 @@ def send_out_of_stock_notification(
 EVENT_HANDLERS = {
     
     events.Allocated: [publish_allocated_event],
+    events.Deallocated: [reallocate],
     events.NotAvailable: [send_out_of_stock_notification],
     
 }  # type: Dict[Type[events.Event], List[Callable]]
@@ -79,5 +97,6 @@ EVENT_HANDLERS = {
 COMMAND_HANDLERS = {
     commands.CreateService: add_service,
     commands.AllocateService: allocate,
+    commands.ChangeBatchQuantity: change_batch_quantity,
     
 }  
